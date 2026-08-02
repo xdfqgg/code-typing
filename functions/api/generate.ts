@@ -23,13 +23,10 @@ const SYSTEM_PROMPT =
 
 // 题库支持的语言白名单（防 prompt 注入）
 const LANGUAGES = [
-  'TypeScript',
-  'JavaScript',
-  'Python',
-  'CSS',
-  'HTML',
-  'Bash',
-  'SQL',
+  'TypeScript', 'JavaScript', 'Python', 'Go', 'Rust',
+  'Java', 'C++', 'C#', 'Ruby', 'PHP', 'Swift', 'Kotlin',
+  'CSS', 'HTML', 'SQL', 'Bash', 'YAML', 'Dockerfile',
+  'GraphQL', 'Lua', 'R', 'Zig',
 ]
 
 function buildPrompt(language: string): string {

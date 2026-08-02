@@ -12,7 +12,12 @@ import type { AiProvider } from './hooks/useAiGenerate'
 import { snippets } from './data/snippets'
 
 const TIME_OPTIONS = [30, 60, 120, 300]
-const LANGUAGES = ['TypeScript', 'JavaScript', 'Python', 'CSS', 'HTML', 'SQL', 'Bash']
+const LANGUAGES = [
+  'TypeScript', 'JavaScript', 'Python', 'Go', 'Rust',
+  'Java', 'C++', 'C#', 'Ruby', 'PHP', 'Swift', 'Kotlin',
+  'CSS', 'HTML', 'SQL', 'Bash', 'YAML', 'Dockerfile',
+  'GraphQL', 'Lua', 'R', 'Zig',
+]
 
 type Source = 'builtin' | 'ai' | 'custom'
 

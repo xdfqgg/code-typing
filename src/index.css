@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* 打字练习 — 颜色令牌 */
+:root {
+  --color-accent: #5B7FFF;
+  --color-correct: #2D9A7A;
+  --color-error: #E0556A;
+  --color-code-bg: #F8F7F4;
+}
+
+body {
+  margin: 0;
+  background: #faf9f6;
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

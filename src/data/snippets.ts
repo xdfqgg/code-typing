@@ -116,7 +116,6 @@ function mapValues<K extends string, V, R>(
   return fibonacci(n - 1) + fibonacci(n - 2)
 }
 
-// 打印前 10 个斐波那契数
 for (let i = 0; i < 10; i++) {
   console.log(fibonacci(i))
 }`,
@@ -239,13 +238,10 @@ greet('World').then(console.log)`,
     id: 'py-list-comp',
     name: '列表推导式',
     language: 'Python',
-    code: `# 列表推导式
-squares = [x**2 for x in range(10)]
+    code: `squares = [x**2 for x in range(10)]
 
-# 带条件的推导
 evens = [x for x in range(20) if x % 2 == 0]
 
-# 字典推导
 word = "hello"
 freq = {ch: word.count(ch) for ch in set(word)}
 
@@ -293,7 +289,7 @@ fibonacci(20)`,
         self.file.close()
         if exc_type:
             print(f"出错了: {exc_val}")
-        return False  # 不吞掉异常
+        return False
 
 with FileManager("test.txt", "w") as f:
     f.write("Hello, World!")`,
@@ -475,9 +471,8 @@ function levelOrder(root: TreeNode | null): number[][] {
   return maxLen
 }
 
-// 示例
-console.log(lengthOfLongestSubstring("abcabcbb")) // 3
-console.log(lengthOfLongestSubstring("bbbbb"))    // 1`,
+console.log(lengthOfLongestSubstring("abcabcbb"))
+console.log(lengthOfLongestSubstring("bbbbb"))`,
   },
   // ---- HTML ----
   {
@@ -603,16 +598,13 @@ BACKUP_DIR="/backups/\$(date +%Y%m%d)"
 
 echo "=== 开始部署 ==="
 
-# 创建备份
 mkdir -p "$BACKUP_DIR"
 cp -r "$PROJECT_DIR/dist" "$BACKUP_DIR/"
 
-# 构建
 cd "$PROJECT_DIR"
 npm ci --production
 npm run build
 
-# 检查构建结果
 if [ ! -d "dist" ]; then
   echo "❌ 构建失败" >&2
   exit 1
@@ -625,7 +617,6 @@ echo "✅ 部署完成 (\$(du -sh dist | cut -f1))"`,
     name: 'Git 自动化脚本',
     language: 'Bash',
     code: `#!/bin/bash
-# 批量 git pull 所有子目录
 for dir in */; do
   if [ -d "$dir/.git" ]; then
     echo "→ 更新 $dir"
@@ -714,11 +705,11 @@ function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
     language: 'Rust',
     code: `fn main() {
     let s1 = String::from("hello");
-    let s2 = &s1;             // 不可变借用
+    let s2 = &s1;
     println!("{} {}", s1, s2); // s1 仍可用
 
     let mut v = vec![1, 2, 3];
-    v.push(4);                // 可变借用
+    v.push(4);
     let sum: i32 = v.iter().sum();
     println!("sum = {}", sum);
 }`,
@@ -1142,7 +1133,7 @@ extension Identifiable {
     code: `import kotlinx.coroutines.*
 
 suspend fun fetchUser(id: Int): String {
-    delay(1000)  // 模拟网络请求
+    delay(1000)
     return "User(id=$id, name=Alice)"
 }
 
@@ -1310,15 +1301,13 @@ spec:
     id: 'docker-node',
     name: 'Node.js 多阶段构建',
     language: 'Dockerfile',
-    code: `# 构建阶段
-FROM node:22-alpine AS builder
+    code: `FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
-# 运行阶段
 FROM node:22-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/dist ./dist

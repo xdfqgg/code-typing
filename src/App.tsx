@@ -244,34 +244,44 @@ export default function App() {
         className="relative p-6 rounded-xl border border-neutral-200 bg-white overflow-auto max-h-[55vh] shadow-sm"
         style={{ fontFamily: 'JetBrains Mono Variable, monospace' }}
       >
-        <pre className="text-[15px] leading-relaxed whitespace-pre-wrap break-all m-0 text-neutral-300">
+        <pre
+          className="text-[15px] leading-relaxed whitespace-pre-wrap break-all m-0 text-neutral-300"
+          style={{ tabSize: 2 }}
+        >
           {chars.map((ch, i) => {
-            const isCursor = i === cursorIndex
+            const isCursor = i === cursorIndex && gameStatus !== 'finished'
             const isNewline = ch.char === '\n'
 
-            // 行号标记（每行开头显示行号）
-            if (isCursor && gameStatus !== 'finished') {
-              return (
-                <span key={i} id="typing-cursor">
-                  <span className="inline-block w-[2px] h-[1.2em] bg-[#5B7FFF] animate-pulse align-middle rounded-sm" />
-                  {isNewline ? '\n' : null}
-                </span>
-              )
-            }
+            // 光标闪烁条（在当前字符前面）
+            const cursorBar = isCursor ? (
+              <span
+                id="typing-cursor"
+                className="inline-block w-[2px] h-[1.2em] bg-[#5B7FFF] animate-pulse align-middle rounded-sm"
+              />
+            ) : null
 
             if (isNewline) {
-              return <React.Fragment key={i}>{'\n'}</React.Fragment>
+              return (
+                <React.Fragment key={i}>
+                  {cursorBar}
+                  {'\n'}
+                </React.Fragment>
+              )
             }
 
             let className = ''
             if (ch.status === 'correct') className = 'text-[#2D9A7A]'
             else if (ch.status === 'incorrect')
               className = 'text-[#E0556A] bg-[#E0556A]/10 rounded-sm'
+            else if (isCursor)
+              // 当前字符：高亮底色，提示用户要敲什么
+              className = 'bg-[#5B7FFF]/15 text-neutral-600 rounded-sm'
 
             return (
-              <span key={i} className={className}>
-                {ch.char}
-              </span>
+              <React.Fragment key={i}>
+                {cursorBar}
+                <span className={className}>{ch.char}</span>
+              </React.Fragment>
             )
           })}
         </pre>

@@ -705,4 +705,806 @@ function cartReducer(state: CartItem[], action: CartAction): CartItem[] {
   }
 }`,
   },
+  // ============ 新增语言 ============
+
+  // ---- Rust ----
+  {
+    id: 'rust-ownership',
+    name: '所有权与借用',
+    language: 'Rust',
+    code: `fn main() {
+    let s1 = String::from("hello");
+    let s2 = &s1;             // 不可变借用
+    println!("{} {}", s1, s2); // s1 仍可用
+
+    let mut v = vec![1, 2, 3];
+    v.push(4);                // 可变借用
+    let sum: i32 = v.iter().sum();
+    println!("sum = {}", sum);
+}`,
+  },
+  {
+    id: 'rust-enum',
+    name: '枚举与模式匹配',
+    language: 'Rust',
+    code: `enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(u8, u8, u8),
+}
+
+fn process(msg: Message) {
+    match msg {
+        Message::Quit => println!("退出"),
+        Message::Move { x, y } => println!("移到 ({}, {})", x, y),
+        Message::Write(text) => println!("写入: {}", text),
+        Message::ChangeColor(r, g, b) => println!("颜色: #{:02x}{:02x}{:02x}", r, g, b),
+    }
+}`,
+  },
+  {
+    id: 'rust-iterator',
+    name: '迭代器链',
+    language: 'Rust',
+    code: `fn top_three(words: &[&str]) -> Vec<String> {
+    words
+        .iter()
+        .filter(|w| w.len() > 2)
+        .map(|w| w.to_uppercase())
+        .take(3)
+        .collect()
+}
+
+fn main() {
+    let words = ["hi", "hello", "rust", "world", "ok"];
+    let result = top_three(&words);
+    println!("{:?}", result);
+}`,
+  },
+  // ---- Go ----
+  {
+    id: 'go-goroutine',
+    name: 'Goroutine + Channel',
+    language: 'Go',
+    code: `package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func worker(id int, jobs <-chan string, results chan<- string) {
+    for job := range jobs {
+        time.Sleep(500 * time.Millisecond)
+        results <- fmt.Sprintf("worker %d done: %s", id, job)
+    }
+}
+
+func main() {
+    jobs := make(chan string, 5)
+    results := make(chan string, 5)
+
+    for w := 1; w <= 3; w++ {
+        go worker(w, jobs, results)
+    }
+
+    for _, j := range []string{"a", "b", "c"} {
+        jobs <- j
+    }
+    close(jobs)
+
+    for i := 0; i < 3; i++ {
+        fmt.Println(<-results)
+    }
+}`,
+  },
+  {
+    id: 'go-interface',
+    name: '接口与多态',
+    language: 'Go',
+    code: `package main
+
+import "fmt"
+
+type Shape interface {
+    Area() float64
+}
+
+type Circle struct {
+    Radius float64
+}
+
+func (c Circle) Area() float64 {
+    return 3.14 * c.Radius * c.Radius
+}
+
+type Rectangle struct {
+    Width, Height float64
+}
+
+func (r Rectangle) Area() float64 {
+    return r.Width * r.Height
+}
+
+func printArea(s Shape) {
+    fmt.Printf("面积: %.2f\n", s.Area())
+}
+
+func main() {
+    printArea(Circle{Radius: 5})
+    printArea(Rectangle{Width: 3, Height: 4})
+}`,
+  },
+  {
+    id: 'go-defer',
+    name: 'defer 资源管理',
+    language: 'Go',
+    code: `package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func readConfig(path string) error {
+    file, err := os.Open(path)
+    if err != nil {
+        return fmt.Errorf("打开失败: %w", err)
+    }
+    defer file.Close()
+
+    data := make([]byte, 1024)
+    n, err := file.Read(data)
+    if err != nil {
+        return fmt.Errorf("读取失败: %w", err)
+    }
+
+    fmt.Printf("读取了 %d 字节\\n", n)
+    return nil
+}`,
+  },
+  // ---- Java ----
+  {
+    id: 'java-stream',
+    name: 'Stream API',
+    language: 'Java',
+    code: `import java.util.*;
+import java.util.stream.*;
+
+public class StreamDemo {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+
+        List<String> result = names.stream()
+            .filter(name -> name.length() > 3)
+            .map(String::toUpperCase)
+            .sorted()
+            .collect(Collectors.toList());
+
+        System.out.println(result);
+
+        long count = names.stream()
+            .filter(name -> name.startsWith("A"))
+            .count();
+        System.out.println("以A开头: " + count);
+    }
+}`,
+  },
+  {
+    id: 'java-optional',
+    name: 'Optional 空值处理',
+    language: 'Java',
+    code: `import java.util.Optional;
+
+public class UserService {
+    private Map<Long, User> db = new HashMap<>();
+
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(db.get(id));
+    }
+
+    public String getUserName(Long id) {
+        return findById(id)
+            .map(User::getName)
+            .orElse("未知用户");
+    }
+
+    public void greet(Long id) {
+        findById(id).ifPresentOrElse(
+            user -> System.out.println("你好, " + user.getName()),
+            () -> System.out.println("用户不存在")
+        );
+    }
+}`,
+  },
+  // ---- C++ ----
+  {
+    id: 'cpp-smartptr',
+    name: '智能指针',
+    language: 'C++',
+    code: `#include <iostream>
+#include <memory>
+#include <vector>
+
+struct Node {
+    int value;
+    std::shared_ptr<Node> next;
+
+    Node(int v) : value(v) {}
+};
+
+int main() {
+    auto head = std::make_shared<Node>(1);
+    head->next = std::make_shared<Node>(2);
+    head->next->next = std::make_shared<Node>(3);
+
+    auto curr = head;
+    while (curr) {
+        std::cout << curr->value << " ";
+        curr = curr->next;
+    }
+    std::cout << std::endl;
+
+    return 0;
+}`,
+  },
+  {
+    id: 'cpp-template',
+    name: '模板元编程',
+    language: 'C++',
+    code: `#include <iostream>
+#include <vector>
+#include <algorithm>
+
+template <typename T>
+T max_element(const std::vector<T>& vec) {
+    if (vec.empty()) throw std::runtime_error("空向量");
+    T max_val = vec[0];
+    for (const auto& v : vec) {
+        if (v > max_val) max_val = v;
+    }
+    return max_val;
+}
+
+int main() {
+    std::vector<int> nums = {3, 7, 2, 9, 1};
+    std::cout << "最大值: " << max_element(nums) << std::endl;
+
+    std::vector<std::string> words = {"apple", "zebra", "cat"};
+    std::cout << "最大: " << max_element(words) << std::endl;
+}`,
+  },
+  // ---- Ruby ----
+  {
+    id: 'ruby-block',
+    name: 'Block 与迭代器',
+    language: 'Ruby',
+    code: `def with_timing
+  start = Time.now
+  result = yield
+  elapsed = Time.now - start
+  puts "耗时: #{elapsed.round(4)}s"
+  result
+end
+
+data = with_timing do
+  (1..1_000_000).select(&:odd?).sum
+end
+
+puts "结果: #{data}"
+
+[3, 1, 4, 1, 5]
+  .select { |n| n > 2 }
+  .map { |n| n * n }
+  .each { |n| puts n }`,
+  },
+  {
+    id: 'ruby-mixin',
+    name: 'Mixin 模块',
+    language: 'Ruby',
+    code: `module Loggable
+  def log(message)
+    puts "[#{self.class}] #{Time.now}: #{message}"
+  end
+end
+
+module Serializable
+  def to_json(*keys)
+    hash = keys.each_with_object({}) { |k, h| h[k] = send(k) }
+    hash.to_json
+  end
+end
+
+class Order
+  include Loggable
+  include Serializable
+
+  attr_reader :id, :total
+
+  def initialize(id, total)
+    @id = id
+    @total = total
+    log "订单 #{id} 已创建"
+  end
+end`,
+  },
+  // ---- PHP ----
+  {
+    id: 'php-types',
+    name: '类型声明与匹配',
+    language: 'PHP',
+    code: `<?php
+
+enum Status: string {
+    case Draft = 'draft';
+    case Published = 'published';
+    case Archived = 'archived';
+}
+
+function getLabel(Status $status): string {
+    return match ($status) {
+        Status::Draft => '草稿',
+        Status::Published => '已发布',
+        Status::Archived => '已归档',
+    };
+}
+
+function findUser(int $id): ?array {
+    $users = [1 => ['name' => 'Alice'], 2 => ['name' => 'Bob']];
+    return $users[$id] ?? null;
+}`,
+  },
+  {
+    id: 'php-array',
+    name: '数组函数链',
+    language: 'PHP',
+    code: `<?php
+
+$orders = [
+    ['id' => 1, 'total' => 120, 'status' => 'paid'],
+    ['id' => 2, 'total' => 80, 'status' => 'pending'],
+    ['id' => 3, 'total' => 200, 'status' => 'paid'],
+];
+
+$paidTotals = array_sum(
+    array_column(
+        array_filter($orders, fn($o) => $o['status'] === 'paid'),
+        'total'
+    )
+);
+
+$grouped = array_reduce($orders, function ($carry, $order) {
+    $carry[$order['status']][] = $order;
+    return $carry;
+}, []);`,
+  },
+  // ---- Swift ----
+  {
+    id: 'swift-async',
+    name: 'async/await 网络请求',
+    language: 'Swift',
+    code: `struct Post: Codable {
+    let id: Int
+    let title: String
+    let body: String
+}
+
+func fetchPosts() async throws -> [Post] {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+    let (data, _) = try await URLSession.shared.data(from: url)
+    let posts = try JSONDecoder().decode([Post].self, from: data)
+    return Array(posts.prefix(5))
+}
+
+Task {
+    do {
+        let posts = try await fetchPosts()
+        for post in posts {
+            print("\\(post.id): \\(post.title)")
+        }
+    } catch {
+        print("请求失败: \\(error)")
+    }
+}`,
+  },
+  {
+    id: 'swift-enum',
+    name: '关联值枚举',
+    language: 'Swift',
+    code: `enum APIResult<T> {
+    case success(T)
+    case failure(Error)
+}
+
+func handle<T>(_ result: APIResult<T>) -> String {
+    switch result {
+    case .success(let value):
+        return "成功: \\(value)"
+    case .failure(let error):
+        return "失败: \\(error.localizedDescription)"
+    }
+}
+
+protocol Identifiable {
+    var id: String { get }
+}
+
+extension Identifiable {
+    func identify() -> String { "ID: \\(id)" }
+}`,
+  },
+  // ---- Kotlin ----
+  {
+    id: 'kotlin-coroutine',
+    name: '协程与挂起函数',
+    language: 'Kotlin',
+    code: `import kotlinx.coroutines.*
+
+suspend fun fetchUser(id: Int): String {
+    delay(1000)  // 模拟网络请求
+    return "User(id=$id, name=Alice)"
+}
+
+suspend fun main() = coroutineScope {
+    val users = (1..5).map { id ->
+        async { fetchUser(id) }
+    }
+
+    users.awaitAll().forEach { println(it) }
+    println("全部获取完成")
+}`,
+  },
+  {
+    id: 'kotlin-scope',
+    name: '作用域函数',
+    language: 'Kotlin',
+    code: `data class Config(
+    var host: String = "localhost",
+    var port: Int = 8080,
+    var debug: Boolean = false
+)
+
+fun main() {
+    val config = Config().apply {
+        host = "0.0.0.0"
+        port = 3000
+    }
+
+    val info = config.run {
+        "http://$host:$port"
+    }
+
+    config.let { cfg ->
+        if (cfg.debug) println("调试模式")
+    }
+
+    val env = System.getenv("APP_ENV") ?: "development"
+    println("环境: $env")
+}`,
+  },
+  // ---- Lua ----
+  {
+    id: 'lua-table',
+    name: 'Table 作为数组/字典',
+    language: 'Lua',
+    code: `local function map(tbl, fn)
+    local result = {}
+    for i, v in ipairs(tbl) do
+        result[i] = fn(v, i)
+    end
+    return result
+end
+
+local function filter(tbl, pred)
+    local result = {}
+    for _, v in ipairs(tbl) do
+        if pred(v) then
+            table.insert(result, v)
+        end
+    end
+    return result
+end
+
+local nums = {1, 2, 3, 4, 5, 6}
+local odds = filter(nums, function(n) return n % 2 == 1 end)
+local squared = map(odds, function(n) return n * n end)
+
+for _, v in ipairs(squared) do print(v) end`,
+  },
+  // ---- R ----
+  {
+    id: 'r-dplyr',
+    name: 'dplyr 数据操作',
+    language: 'R',
+    code: `library(dplyr)
+
+data <- tibble(
+  name = c("Alice", "Bob", "Charlie", "Diana"),
+  age = c(25, 30, 35, 28),
+  salary = c(50000, 60000, 75000, 55000)
+)
+
+result <- data %>%
+  filter(age >= 28) %>%
+  mutate(
+    bracket = case_when(
+      salary < 55000 ~ "low",
+      salary < 70000 ~ "mid",
+      TRUE ~ "high"
+    )
+  ) %>%
+  group_by(bracket) %>%
+  summarise(
+    count = n(),
+    avg_salary = mean(salary),
+    .groups = "drop"
+  )
+
+print(result)`,
+  },
+  // ---- YAML ----
+  {
+    id: 'yaml-gh-action',
+    name: 'GitHub Actions 工作流',
+    language: 'YAML',
+    code: `name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: \${{ secrets.CF_API_TOKEN }}
+          command: pages deploy dist`,
+  },
+  {
+    id: 'yaml-k8s',
+    name: 'Kubernetes Deployment',
+    language: 'YAML',
+    code: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-typing
+  labels:
+    app: code-typing
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: code-typing
+  template:
+    metadata:
+      labels:
+        app: code-typing
+    spec:
+      containers:
+        - name: app
+          image: xdfqgg/code-typing:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production`,
+  },
+  // ---- Dockerfile ----
+  {
+    id: 'docker-node',
+    name: 'Node.js 多阶段构建',
+    language: 'Dockerfile',
+    code: `# 构建阶段
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# 运行阶段
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+
+EXPOSE 3000
+USER node
+CMD ["node", "dist/server.js"]`,
+  },
+  // ---- GraphQL ----
+  {
+    id: 'graphql-schema',
+    name: 'Schema + Resolver',
+    language: 'GraphQL',
+    code: `type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]!
+  createdAt: String!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  author: User!
+  likes: Int!
+}
+
+type Query {
+  user(id: ID!): User
+  posts(page: Int = 1): [Post!]!
+  search(query: String!): [Post!]!
+}
+
+type Mutation {
+  createPost(title: String!, content: String!): Post!
+  deletePost(id: ID!): Boolean!
+  likePost(id: ID!): Post!
+}`,
+  },
+  // ---- Zig ----
+  {
+    id: 'zig-alloc',
+    name: '分配器与切片',
+    language: 'Zig',
+    code: `const std = @import("std");
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    var list = std.ArrayList(i32).init(allocator);
+    defer list.deinit();
+
+    var i: i32 = 0;
+    while (i < 10) : (i += 1) {
+        try list.append(i * i);
+    }
+
+    const slice = list.items;
+    std.debug.print("平方数: {any}\\n", .{slice});
+}`,
+  },
+  // ============ 已有语言补充 ============
+
+  // ---- 更多 TypeScript ----
+  {
+    id: 'ts-decorator',
+    name: '装饰器模式（简易实现）',
+    language: 'TypeScript',
+    code: `function logged(target: any, key: string, descriptor: PropertyDescriptor) {
+  const original = descriptor.value
+  descriptor.value = function (...args: any[]) {
+    console.log(\`调用 \${key}(\${args.join(', ')})\`)
+    const result = original.apply(this, args)
+    console.log(\`返回 \${JSON.stringify(result)}\`)
+    return result
+  }
+}
+
+class Calculator {
+  @logged
+  add(a: number, b: number): number {
+    return a + b
+  }
+}
+
+const calc = new Calculator()
+calc.add(3, 4)`,
+  },
+  {
+    id: 'ts-builder',
+    name: 'Builder 模式',
+    language: 'TypeScript',
+    code: `class QueryBuilder {
+  private tableName = ''
+  private fields: string[] = ['*']
+  private conditions: string[] = []
+  private limitCount = 0
+
+  from(table: string): this {
+    this.tableName = table
+    return this
+  }
+
+  select(...fields: string[]): this {
+    this.fields = fields
+    return this
+  }
+
+  where(cond: string): this {
+    this.conditions.push(cond)
+    return this
+  }
+
+  limit(n: number): this {
+    this.limitCount = n
+    return this
+  }
+
+  build(): string {
+    let sql = \`SELECT \${this.fields.join(', ')} FROM \${this.tableName}\`
+    if (this.conditions.length) sql += ' WHERE ' + this.conditions.join(' AND ')
+    if (this.limitCount) sql += \` LIMIT \${this.limitCount}\`
+    return sql
+  }
+}`,
+  },
+  // ---- 更多 Python ----
+  {
+    id: 'py-dataclass',
+    name: 'dataclass + 类型标注',
+    language: 'Python',
+    code: `from dataclasses import dataclass, field
+from typing import Optional
+
+@dataclass
+class Task:
+    title: str
+    done: bool = False
+    tags: list[str] = field(default_factory=list)
+
+    def toggle(self) -> None:
+        self.done = not self.done
+
+@dataclass
+class Project:
+    name: str
+    tasks: list[Task] = field(default_factory=list)
+
+    def progress(self) -> float:
+        if not self.tasks:
+            return 0.0
+        done = sum(1 for t in self.tasks if t.done)
+        return done / len(self.tasks)
+
+p = Project("CodeTyping")
+p.tasks = [Task("写 hook"), Task("加题库")]`,
+  },
+  // ---- 更多 Bash ----
+  {
+    id: 'bash-trap',
+    name: 'trap 信号处理',
+    language: 'Bash',
+    code: `#!/bin/bash
+set -euo pipefail
+
+cleanup() {
+    local exit_code=\$?
+    echo "清理中..."
+    [ -n "\${TEMP_DIR:-}" ] && rm -rf "\$TEMP_DIR"
+    echo "退出码: \$exit_code"
+}
+trap cleanup EXIT
+
+TEMP_DIR=\$(mktemp -d)
+echo "临时目录: \$TEMP_DIR"
+
+curl -s "https://api.github.com/repos/xdfqgg/code-typing" \\
+    > "\$TEMP_DIR/repo.json"
+
+stars=\$(jq -r '.stargazers_count' "\$TEMP_DIR/repo.json")
+echo "Stars: \$stars"`,
+  },
 ]

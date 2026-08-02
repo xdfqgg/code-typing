@@ -185,7 +185,7 @@ export function useCodeTyping(): TypingGame {
         if (idx >= arr.length) return
 
         // 首次击键，自动开始
-        if (statusRef.current === 'idle') {
+        if ((statusRef.current as GameStatus) === 'idle') {
           setGameStatus('running')
           statusRef.current = 'running'
         }
@@ -202,6 +202,53 @@ export function useCodeTyping(): TypingGame {
             totalRef.current = Math.max(0, totalRef.current - 1)
             setTotalKeystrokes(totalRef.current)
           }
+          return
+        }
+
+        // Enter 键：跨过换行符
+        if (k === 'Enter') {
+          const arr = charsRef.current
+          const idx = cursorRef.current
+          if (idx >= arr.length) return
+
+          if ((statusRef.current as GameStatus) === 'idle') {
+            setGameStatus('running')
+            statusRef.current = 'running'
+          }
+
+          if (arr[idx].char === '\n') {
+            const newChars = [...arr]
+            newChars[idx] = { ...newChars[idx], status: 'correct' }
+            setChars(newChars)
+            charsRef.current = newChars
+            setCursorIndex(idx + 1)
+            cursorRef.current = idx + 1
+            totalRef.current += 1
+            correctRef.current += 1
+            setTotalKeystrokes(totalRef.current)
+            setCorrectKeystrokes(correctRef.current)
+
+            // 自动跳过下一行的缩进空格
+            let skipIdx = idx + 1
+            while (skipIdx < arr.length && isWhitespace(arr[skipIdx].char) && arr[skipIdx].char !== '\n') {
+              const newChars2 = [...charsRef.current]
+              newChars2[skipIdx] = { ...newChars2[skipIdx], status: 'correct' }
+              charsRef.current = newChars2
+              skipIdx++
+              totalRef.current += 1
+              correctRef.current += 1
+            }
+            setChars([...charsRef.current])
+            setCursorIndex(skipIdx)
+            cursorRef.current = skipIdx
+            setTotalKeystrokes(totalRef.current)
+            setCorrectKeystrokes(correctRef.current)
+
+            if (cursorRef.current >= arr.length) {
+              setGameStatus('finished')
+            }
+          }
+          preventDefault?.()
           return
         }
 
@@ -228,11 +275,9 @@ export function useCodeTyping(): TypingGame {
             setCorrectKeystrokes(correctRef.current)
           }
 
-          // 光标移到下一行后，跳过行首空白
-          const nextIdx = idx + 1
-          if (nextIdx < arr.length && isWhitespace(arr[nextIdx].char) && arr[nextIdx].char !== '\n') {
-            // 自动跳过连续空白（行首缩进）
-            let skipIdx = nextIdx
+          // 只有刚越过换行符时，才自动跳过下一行的缩进空格
+          if (expected === '\n') {
+            let skipIdx = idx + 1
             while (skipIdx < arr.length && isWhitespace(arr[skipIdx].char) && arr[skipIdx].char !== '\n') {
               const newChars2 = [...charsRef.current]
               newChars2[skipIdx] = { ...newChars2[skipIdx], status: 'correct' }

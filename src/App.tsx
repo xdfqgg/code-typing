@@ -66,6 +66,8 @@ export default function App() {
   // 全局键盘监听
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      // 忽略输入法组合事件（中文 IME 等）
+      if (e.isComposing || e.key === 'Process') return
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement

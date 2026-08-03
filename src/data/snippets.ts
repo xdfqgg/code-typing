@@ -25,7 +25,7 @@ export const snippets: Snippet[] = [
 
   return (
     <button onClick={() => setCount(count + 1)}>
-      点击了 {count} 次
+      Clicked {count} times
     </button>
   )
 }`,
@@ -65,7 +65,7 @@ async function fetchUser(id: number): Promise<User> {
       })
   }, [])
 
-  if (loading) return <p>加载中...</p>
+  if (loading) return <p>Loading...</p>
   return posts.map((post) => <BlogCard key={post.id} post={post} />)
 }`,
   },
@@ -260,7 +260,7 @@ def timer(func):
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
-        print(f"{func.__name__} 耗时 {elapsed:.4f}s")
+        print(f"{func.__name__} took {elapsed:.4f}s")
         return result
     return wrapper
 
@@ -288,7 +288,7 @@ fibonacci(20)`,
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.file.close()
         if exc_type:
-            print(f"出错了: {exc_val}")
+            print(f"Error: {exc_val}")
         return False
 
 with FileManager("test.txt", "w") as f:
@@ -317,7 +317,7 @@ async def main():
     ]
     results = await fetch_all(urls)
     for i, body in enumerate(results):
-        print(f"[{i}] {len(body)} 字节")
+        print(f"[{i}] {len(body)} bytes")
 
 asyncio.run(main())`,
   },
@@ -335,13 +335,13 @@ asyncio.run(main())`,
 function renderState<T>(state: ApiState<T>) {
   switch (state.status) {
     case 'idle':
-      return '点击加载按钮开始'
+      return 'Click to load'
     case 'loading':
-      return '加载中...'
+      return 'Loading...'
     case 'success':
-      return \`数据: \${JSON.stringify(state.data)}\`
+      return \`Data: \${JSON.stringify(state.data)}\`
     case 'error':
-      return \`出错了: \${state.error}\`
+      return \`Error: \${state.error}\`
   }
 }`,
   },
@@ -358,7 +358,7 @@ function string(): Schema<string> {
   return {
     parse(value: unknown): string {
       if (typeof value !== 'string') {
-        throw new Error(\`期望 string，得到 \${typeof value}\`)
+        throw new Error(\`Expected string, got \${typeof value}\`)
       }
       return value
     },
@@ -371,7 +371,7 @@ function object<T extends Record<string, Schema<unknown>>>(
   return {
     parse(value: unknown) {
       if (typeof value !== 'object' || value === null) {
-        throw new Error('期望 object')
+        throw new Error('Expected object')
       }
       const result = {} as Record<string, unknown>
       for (const key in shape) {
@@ -480,25 +480,25 @@ console.log(lengthOfLongestSubstring("bbbbb"))`,
     name: '语义化 HTML5',
     language: 'HTML',
     code: `<header>
-  <nav aria-label="主导航">
-    <a href="/">首页</a>
-    <a href="/blog">博客</a>
-    <a href="/about">关于</a>
+  <nav aria-label="Main nav">
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+    <a href="/about">About</a>
   </nav>
 </header>
 
 <main>
   <article>
-    <h1>文章标题</h1>
+    <h1>Article Title</h1>
     <time datetime="2026-08-02">2026 年 8 月 2 日</time>
-    <p>这是文章正文内容……</p>
+    <p>This is the article content...</p>
   </article>
 
   <aside>
-    <h2>相关文章</h2>
+    <h2>Related</h2>
     <ul>
-      <li><a href="#">上一篇</a></li>
-      <li><a href="#">下一篇</a></li>
+      <li><a href="#">Previous</a></li>
+      <li><a href="#">Next</a></li>
     </ul>
   </aside>
 </main>
@@ -512,9 +512,9 @@ console.log(lengthOfLongestSubstring("bbbbb"))`,
     name: '表单 + 无障碍',
     language: 'HTML',
     code: `<form aria-labelledby="signup-title" novalidate>
-  <h2 id="signup-title">注册账号</h2>
+  <h2 id="signup-title">Sign Up</h2>
 
-  <label for="username">用户名</label>
+  <label for="username">Username</label>
   <input
     id="username"
     type="text"
@@ -523,20 +523,20 @@ console.log(lengthOfLongestSubstring("bbbbb"))`,
     minlength="3"
     aria-describedby="username-hint"
   />
-  <small id="username-hint">至少 3 个字符</small>
+  <small id="username-hint">At least 3 characters</small>
 
-  <label for="email">邮箱</label>
+  <label for="email">Email</label>
   <input id="email" type="email" name="email" required />
 
   <fieldset>
-    <legend>偏好设置</legend>
+    <legend>Preferences</legend>
     <label>
       <input type="checkbox" name="newsletter" checked />
-      订阅新闻邮件
+      Subscribe to newsletter
     </label>
   </fieldset>
 
-  <button type="submit">注册</button>
+  <button type="submit">Sign Up</button>
 </form>`,
   },
   // ---- SQL ----
@@ -596,7 +596,7 @@ set -euo pipefail
 PROJECT_DIR="/app/code-typing"
 BACKUP_DIR="/backups/\$(date +%Y%m%d)"
 
-echo "=== 开始部署 ==="
+echo "=== Starting Deployment ==="
 
 mkdir -p "$BACKUP_DIR"
 cp -r "$PROJECT_DIR/dist" "$BACKUP_DIR/"
@@ -606,11 +606,11 @@ npm ci --production
 npm run build
 
 if [ ! -d "dist" ]; then
-  echo "❌ 构建失败" >&2
+  echo "❌ Build failed" >&2
   exit 1
 fi
 
-echo "✅ 部署完成 (\$(du -sh dist | cut -f1))"`,
+echo "✅ Deploy complete (\$(du -sh dist | cut -f1))"`,
   },
   {
     id: 'bash-git',
@@ -628,7 +628,7 @@ for dir in */; do
   fi
 done
 
-echo "全部更新完成 ✅"`,
+echo "All repos updated ✅"`,
   },
   // ---- 进阶 React ----
   {
@@ -841,17 +841,17 @@ import (
 func readConfig(path string) error {
     file, err := os.Open(path)
     if err != nil {
-        return fmt.Errorf("打开失败: %w", err)
+        return fmt.Errorf("open failed: %w", err)
     }
     defer file.Close()
 
     data := make([]byte, 1024)
     n, err := file.Read(data)
     if err != nil {
-        return fmt.Errorf("读取失败: %w", err)
+        return fmt.Errorf("read failed: %w", err)
     }
 
-    fmt.Printf("读取了 %d 字节\\n", n)
+    fmt.Printf("read %d bytes\\n", n)
     return nil
 }`,
   },
@@ -1016,7 +1016,7 @@ class Order
   def initialize(id, total)
     @id = id
     @total = total
-    log "订单 #{id} 已创建"
+    log "Order #{id} created"
   end
 end`,
   },
